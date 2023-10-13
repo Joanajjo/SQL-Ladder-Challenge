@@ -1,0 +1,147 @@
+--Q32. How many rows are in the pets table?
+SELECT *
+FROM pets;
+
+--Q33. How many female pets are in the pets table?
+SELECT sex
+FROM pets
+WHERE sex IS 'F';
+
+--Q34. How many female cats are in the pets table?
+SELECT sex, species
+FROM pets
+WHERE sex IS 'F' AND species IS 'cat';
+
+--Q35. What's the mean age of pets in the pets table?
+SELECT avg (age)
+FROM pets;
+
+--Q36 What's the mean age of dogs in the pets table?
+SELECT avg (age), species
+FROM pets
+WHERE species IS 'dog';
+
+--Q37 What's the mean age of male dogs in the pets table?
+SELECT avg (age)
+FROM pets
+WHERE species ='dog' AND sex='M';
+
+--Q38 What's the count, mean, minimum, and maximum of pet ages in the pets table?
+SELECT count(age), avg(age), min(age), max(age)
+FROM pets;
+
+--Q39 Repeat the previous problem with the following stipulations: Round the average to one decimal place. Give each column a human-readable column name (for example, "Average Age")
+SELECT round (avg (age))
+FROM pets;
+
+SELECT count (age) , avg (age) AS Average_Age, min (age) AS Minimun_Age, max(age) AS Maximum_Age
+FROM pets;
+
+--Q40 How many rows in employees_null have missing salaries?
+SELECT count(*)
+FROM employees_null
+WHERE salary is NULL;
+
+--Q41 How many salespeople in employees_null having nonmissing salaries?
+SELECT count(job)
+FROM employees_null
+WHERE job='Sales' AND salary>0.1;
+
+--Q42 What's the mean salary of employees who joined the company after 2010? 
+SELECT avg(salary)
+FROM employees
+WHERE CAST(strftime('%Y',startdate) as interger)>2010;
+
+--Q43 What's the mean salary of employees in Swiss Francs?
+SELECT avg(salary*0.97)/1 as CHF
+FROM employees;
+
+--Q44 Create a query that computes the mean salary in USD as well as CHF. 
+SELECT avg(salary*0.97)/1 as Mean_Salary_CHF, avg(salary) as Mean_Salary_USD
+FROM employees;
+
+SELECT
+  printf('%,.2d FR.', avg(salary * 0.97)) AS formatted_CHF,
+  printf('$%,.2d', avg(salary)) AS formatted_USD
+FROM employees;
+
+--Q45 What is the average age of pets by species?
+SELECT avg(age), species
+FROM pets
+GROUP BY species;
+
+--Q47 What is the count, mean, minimum, and maximum age by species in pets?
+SELECT count (age),avg(age), min(age), max(age), species
+FROM pets
+GROUP BY species;
+
+--Q48 Show the mean salaries of each job title in employees.
+SELECT round(avg(salary)), job
+FROM employees
+GROUP BY job;
+
+--Q49 Show the mean salaries in New Zealand dollars of each job title in employees.
+SELECT (avg(salary*1.65)/1) AS salary_NZD, job
+FROM employees
+GROUP BY job;
+
+--Q50 Show the mean, min, and max salaries of each job title in employees, as well as the numbers of employees in each category.
+SELECT avg(salary), max(salary), min(salary), job, count (id) as number_employees
+FROM employees
+GROUP BY job;
+
+--Q51 Show the mean salaries of each job title in employees sorted descending by salary.
+SELECT AVG(salary), job 
+FROM employees
+GROUP BY job
+ORDER BY job desc;
+
+--Q52 What are the top 5 most common first names among employees?
+SELECT count(firstname), firstname
+FROM employees
+GROUP BY firstname
+ORDER BY count(firstname) desc
+LIMIT 5;
+
+--Q53 Show all first names which have exactly 2 occurrences in employees.
+SELECT count(firstname), firstname
+FROM employees
+GROUP BY firstname
+HAVING count(firstname) IS 2;
+
+--Q54 
+SELECT *
+FROM transactions;
+
+--Q55 Show the top 5 largest orders (and their respective customer) in terms of the numbers of items purchased in that order.
+SELECT count(quantity), customer
+FROM transactions
+GROUP BY customer
+ORDER BY count(quantity) desc;
+
+--Q56 how the total cost of each transaction.
+SELECT SUM(quantity*unit_price), customer, order_id
+FROM transactions
+GROUP BY order_id
+ORDER BY SUM(quantity*unit_price);
+
+--Q57 Show the top 5 transactions in terms of total cost.
+SELECT SUM(quantity*unit_price), customer, order_id
+FROM transactions
+GROUP BY order_id
+ORDER BY SUM(quantity*unit_price) DESC
+LIMIT 5;
+
+--Q58 Show the top 5 customers in terms of total revenue
+SELECT SUM(quantity*unit_price), customer, order_id
+FROM transactions
+GROUP BY customer
+ORDER BY SUM(quantity*unit_price) DESC
+LIMIT 5;
+
+--Q59 Show the top 5 employees in terms of revenue generated
+SELECT SUM(quantity*unit_price), employee_id
+FROM transactions
+GROUP BY employee_id
+ORDER BY SUM(quantity*unit_price) DESC
+LIMIT 5;
